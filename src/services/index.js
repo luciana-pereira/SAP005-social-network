@@ -1,18 +1,24 @@
-// // Puxar postagem da database
-// export const getPosts = () => {
-//   firebase.firestore().collection('posts').get();
-// };
+export const likePost = (id) => firebase
+  .firestore()
+  .collection('posts')
+  .doc(id)
+  .update({
+    likes: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
+  });
 
-// // Deletar postagem
-// export const deletePost = (id) => {
-//   firebase.firestore().collection('posts').doc(id).delete()
-//     .then(() => {
-//       console.log('Publicação deletada com sucesso!');
-//     })
-//     .catch((error) => {
-//       console.error('Erro ao excluir postagem: ', error);
-//     });
-// };
+export const dislikePost = (id) => firebase
+  .firestore()
+  .collection('posts')
+  .doc(id)
+  .update({
+    likes: firebase.firestore.FieldValue.arrayRemove(firebase.auth().currentUser.uid),
+  });
+
+export const deletePost = (id) => firebase
+  .firestore()
+  .collection('posts')
+  .doc(id)
+  .delete();
 
 // Deslogar o usuario
 export const logOut = () => firebase
@@ -68,12 +74,3 @@ export const userId = () => {
   const id = idUser.id;
   return id;
 };
-
-// export const getPost = (getAll) => {
-//   let collection = firebase.firestore().collection('reviews');
-//   const user = firebase.auth().currentUser;
-//   if (!getAll && user) {
-//     collection = firebase.firestore().collection('reviews').where('userInfo.id', '==', user.uid);
-//   }
-//   return collection.orderBy('date', 'desc').get().then((queryReview) => queryReview.docs);
-// };

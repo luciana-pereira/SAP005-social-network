@@ -9,7 +9,7 @@ export const Post = () => {
   post.innerHTML = `
 <div class='container'>
   <header class="header">
-    <img src='./assets/logo/runners-40px.png' alt='Logo Runners' id='logo' class="logo"></a>
+    <img src='./assets/logo/runners-40px.png' alt='Logo Runners' id='logo' class="logo">
     <input class="menu-btn" type="checkbox" id="menu-btn" />
     <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
     <ul class="menu">
@@ -18,51 +18,63 @@ export const Post = () => {
     </ul>
   </header>
   <div class="form-login">
-    <hr />
+    <br />
     <section>
       <form class='form-review'>
         <textarea class='post' id='newPost'></textarea>
-        <hr />
+        <br />
         <button type='button' class='btnn' id='btn'>Postar</button>
       </form>
     </section>
   </div>
 </div>
 <div class='' id='post-content'></div>
+<footer>
+<p>
+  Made with <i class="fa fa-heart"></i> | Devas
+  <i class="fab fa-github"></i>
+  <a target="_blank" href="#">  Cris Mantovani</a>
+  <i class="fab fa-github"></i>
+  <a target="_blank" href="#"> Elis Brasil</a>
+  <i class="fab fa-github"></i>
+  <a target="_blank" href="#"> Luciana Pereira</a> @
+  <i class="fab fa-dev">
+  <a target="_blank" href="#"></i>&nbsp;< Laboratoria ></a>
+</p>
+</footer>
     
 `;
 
   const btnPost = post.querySelector('#btn');
   const textPost = post.querySelector('#newPost');
   const postContent = post.querySelector('#post-content');
+  const btnDelete = post.querySelector('#delete');
 
-  const addCardToScreen = () => {
-    const infUser = firebase.auth().currentUser;
-    const textSave = textPost.value;
-
+  const addCardToScreen = (user) => {
     postContent.innerHTML += `
-            <div class='post-card'>
-            <img src='${infUser.photoURL || '../../assets/Photo_Default.png'}' alt='Imagem do Usuario' id='photo'>
-              <h2 class='name'>${infUser.displayName}</h2>
-              <p class='text'>${textSave}</p>
-              <button id='like'><p id='show-like'>❤️</p></button>
-              <button type='button' id='btn' class='deletePost'><p id='show-like'>Deletar</p></button>
-            </div>
+    <div class='container'>
+    <img src='${user.photo || '../../assets/Photo_Default.png'}' alt='Imagem do Usuario' id='photo'>
+    <h2 class='name'>${user.displayName}</h2>
+    <p class='text'>${user.text}</p>
+    <button id='like' dt-like='${user.id}><p id='show-like'>❤️${user.likes.length}</p></button>
+    <button type='button' id='delete' class='deletePost' dt-delete='${user.id}><p id='show-like'>Deletar</p></button>
+    </div>
     `;
   };
 
   const creatPost = () => {
     const infCreatUser = firebase.auth().currentUser;
     const textToSave = textPost.value;
-
     if (!textToSave) {
-      alert('Campo de postagem em branco');
+      alert('Campo de postagem está em branco');
     } else {
       const userPost = {
         displayName: infCreatUser.displayName,
         photo: infCreatUser.photoURL,
         id: infCreatUser.uid,
         text: textToSave,
+        likes: [],
+        date: new Date().toLocaleString(),
       };
       firebase.firestore().collection('posts').add(userPost).then(() => {
         addCardToScreen(userPost);
@@ -78,8 +90,14 @@ export const Post = () => {
       .collection('posts')
       .get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          console.log(doc.data());
-          postContent.prepend(JSON.stringify(doc.data().displayName));
+          postContent.prepend(addCardToScreen({
+            displayName: doc.data().displayName,
+            photo: doc.data().photo,
+            id: doc.id,
+            text: doc.data().text,
+            likes: doc.data().likes,
+            date: doc.data().date,
+          }));
         });
       })
       .catch((error) => {
@@ -93,8 +111,12 @@ export const Post = () => {
     creatPost();
   });
 
-  const ppost = post.querySelector('#profile');
-  ppost.addEventListener('click', () => {
+  btnDelete.addEventListener('click', (e) => {
+    e.preventDefault();
+  })
+
+  const profile = post.querySelector('#profile');
+  profile.addEventListener('click', () => {
     onNavigate('/profile');
   });
   const leave = post.querySelector('#logOut');
