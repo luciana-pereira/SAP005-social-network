@@ -44,43 +44,20 @@ export const Post = () => {
 </footer>
 `;
 
-  const btnPost = post.querySelector('#btn');
+  const btnPost = post.querySelector('.btnn');
   const textPost = post.querySelector('#newPost');
   const postContent = post.querySelector('#post-content');
   const btnDelete = post.querySelector('#delete');
 
   const addCardToScreen = (user) => {
-    let starNumber = 0;
     postContent.innerHTML += `
     <div class='container' id='postUser'>
     <img src='${user.photo || '../../assets/Photo_Default.png'}' alt='Imagem do Usuario' id='photo'>
     <h2 class='name'>${user.displayName}</h2>
     <p class='text'>${user.text}</p>
-    <button id='like' dt-like='${user.id}><p id='show-like'>❤️ ${starNumber}</p></button>
-    <button id='delete' class='deletePost' dt-delete='${user.id}><p id='show-like'>Deletar</p></button>
+    <button id='delete' class='btnn' dt-delete='${user.id}><p id='show-like'>Deletar</p></button>
     </div>
     `;
-
-    // let likePosts = user.likes;
-    // console.log(user);
-    // postContent.querySelector('#like').addEventListener('click', (e) => {
-    //   e.preventDefault();
-    //   const userFind = likePosts.find((users) => users === firebase.auth().currentUser.uid);
-    //   console.log(userFind);
-    //   if (!userFind) {
-    //     likePost(user.id);
-    //     const showLike = postContent.querySelector('.show-like');
-    //     likePost.push(1);
-    //     likePosts.push(firebase.auth().currentUser.uid);
-    //   } else {
-    //     dislikePost(user.id);
-    //     const showLike = postContent.querySelector('.show-like');
-    //     const likesQuant = Number(showLike.textContent);
-    //     showLike.innerHTML = likesQuant - 1;
-    //     likePosts = likePosts.map((users) => users !== firebase.auth().currentUser.uid);
-    //     starNumber = user.likes.length;
-    //   }
-    // });
   };
 
   const creatPost = () => {
@@ -126,22 +103,22 @@ export const Post = () => {
       });
   };
 
+  const dtPost = () => {
+    console.log('Deseja deletar a postagem?');
+    // if (postDelete === true) {
+    //   deletePost(post.id);
+    //   post.remove('#postUser');
+    // } else {
+    //   alert('Ufa ... postagem permanece!');
+    // }
+  };
+
   btnPost.addEventListener('click', (e) => {
     e.preventDefault();
     obtainPost();
     creatPost();
+    dtPost();
   });
-
-  // btnDelete.addEventListener('click', (e) => {
-  //   e.preventDefault();
-  //   const postDelete = window.confirm('Deseja deletar a postagem?');
-  //   if (postDelete === true) {
-  //     deletePost(post.id);
-  //     post.remove('#postUser');
-  //   } else {
-  //     alert('Ufa ... postagem permanece!');
-  //   }
-  // });
 
   const profile = post.querySelector('#profile');
   profile.addEventListener('click', () => {
