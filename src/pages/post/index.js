@@ -1,5 +1,6 @@
 import {
   logOut,
+  deletePost,
 } from '../../services/index.js';
 import { onNavigate } from '../../utils/history.js';
 
@@ -8,8 +9,9 @@ export const Post = () => {
   post.classList.add('div-post');
   post.innerHTML = `
 <div class='container'>
+
   <header class="header">
-    <img src='./assets/logo/runners-40px.png' alt='Logo Runners' id='logo' class="logo">
+    <img src='./assets/logo/runners-40px.png' alt='Logo Runners' id='logo' class="logo" />
     <input class="menu-btn" type="checkbox" id="menu-btn" />
     <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
     <ul class="menu">
@@ -17,6 +19,7 @@ export const Post = () => {
       <li id='logOut'><a href="#">Sair</a></li>
     </ul>
   </header>
+
   <div class="form-login">
     <br />
     <section>
@@ -28,7 +31,9 @@ export const Post = () => {
     </section>
   </div>
 </div>
+
 <div class='' id='post-content'></div>
+
 <footer>
   <p>
     Made with <i class="fa fa-heart"></i> | Devas
@@ -47,15 +52,15 @@ export const Post = () => {
   const btnPost = post.querySelector('.btnn');
   const textPost = post.querySelector('#newPost');
   const postContent = post.querySelector('#post-content');
-  const btnDelete = post.querySelector('#delete');
+  // const btnDelete = post.querySelector('#delete');
 
   const addCardToScreen = (user) => {
     postContent.innerHTML += `
     <div class='container' id='postUser'>
-    <img src='${user.photo || '../../assets/Photo_Default.png'}' alt='Imagem do Usuario' id='photo'>
-    <h2 class='name'>${user.displayName}</h2>
-    <p class='text'>${user.text}</p>
-    <button id='delete' class='btnn' dt-delete='${user.id}><p id='show-like'>Deletar</p></button>
+      <img src='${user.photo || '../../assets/Photo_Default.png'}' alt='Imagem do Usuario' id='photo' />
+      <h2 class='name'>${user.displayName}</h2>
+      <p class='text'>${user.text}</p>
+      <button id='delete' type="button" class='btnn' dt-delete='${user.id}><p id='show-like'>Deletar</p></button>
     </div>
     `;
   };
@@ -104,13 +109,14 @@ export const Post = () => {
   };
 
   const dtPost = () => {
-    console.log('Deseja deletar a postagem?');
-    // if (postDelete === true) {
-    //   deletePost(post.id);
-    //   post.remove('#postUser');
-    // } else {
-    //   alert('Ufa ... postagem permanece!');
-    // }
+    // eslint-disable-next-line no-restricted-globals
+    const postDelete = confirm('Deseja deletar a postagem?');
+    if (postDelete === true) {
+      deletePost(post.id);
+      post.remove('#postUser');
+    } else {
+      alert('Ufa ... postagem permanece!');
+    }
   };
 
   btnPost.addEventListener('click', (e) => {
@@ -124,6 +130,7 @@ export const Post = () => {
   profile.addEventListener('click', () => {
     onNavigate('/profile');
   });
+
   const leave = post.querySelector('#logOut');
   leave.addEventListener('click', () => {
     logOut()
@@ -131,10 +138,11 @@ export const Post = () => {
         onNavigate('/');
       })
       .catch(() => {
-        const error = 'Não conseguimos deslogar, por gentileza tentar novamente';
-        alert(error);
+        alert('Não conseguimos deslogar, por gentileza tentar novamente');
       });
   });
+
   obtainPost();
+
   return post;
 };
